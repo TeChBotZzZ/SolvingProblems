@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solving Problems - Digital Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #e2e8f0; /* slate-200 */
+        }
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .nav-link {
+            @apply px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-300;
+        }
+        .mobile-nav-link {
+            @apply block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-300;
+        }
+        .section-title {
+            @apply text-5xl sm:text-6xl font-black text-center mb-16 sm:mb-20 text-sky-400 tracking-tight;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #0ea5e9, transparent);
+        }
+        .card {
+            @apply bg-slate-800 p-6 rounded-lg shadow-xl hover:shadow-sky-500/30 transition-all duration-300 transform hover:-translate-y-1;
+        }
+        .btn {
+            @apply px-6 py-3 bg-sky-500 text-white font-semibold rounded-lg shadow-md hover:bg-sky-600 transition-colors duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-75;
+        }
+        .form-input {
+            @apply w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-200 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-shadow duration-200;
+        }
+        /* Scroll reveal animations */
+        .reveal-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-slate-900/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#home" class="flex items-center">
+                        <img src="logo.png" alt="Solving Problems Logo" class="h-8 w-auto mr-3"> <!-- Added logo -->
+                        <span class="text-2xl font-bold text-sky-400">Solving Problems</span>
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="nav-link">Home</a>
+                        <a href="#about" class="nav-link">About</a>
+                        <a href="#services" class="nav-link">Services</a>
+                        <a href="#projects" class="nav-link">Projects</a>
+                        <a href="#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="icon-open" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="mobile-nav-link">Home</a>
+                <a href="#about" class="mobile-nav-link">About</a>
+                <a href="#services" class="mobile-nav-link">Services</a>
+                <a href="#projects" class="mobile-nav-link">Projects</a>
+                <a href="#contact" class="mobile-nav-link">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+            <canvas id="heroCanvas" class="hero-canvas"></canvas>
+            <div class="relative z-10 text-center p-4">
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4">
+                    <span class="text-white">Solving</span> <span class="text-sky-400">Problems</span>
+                </h1>
+                <p class="text-xl sm:text-2xl md:text-3xl text-slate-300 mb-8 max-w-3xl mx-auto">
+                    Crafting Digital Futures, One Innovative Solution at a Time.
+                </p>
+                <p class="text-md sm:text-lg text-slate-400 mb-12 max-w-2xl mx-auto">
+                    A one-person powerhouse dedicated to developing cutting-edge web apps, mobile apps, and custom tech projects tailored to your unique needs.
+                </p>
+                <a href="#services" class="btn text-lg">Discover Solutions</a>
+            </div>
+        </section>
+
+        <section id="about" class="py-16 sm:py-24 bg-slate-800/50 reveal-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">My Mission</h2>
+                <div class="max-w-3xl mx-auto text-center">
+                    <img src="https://placehold.co/150x150/1e293b/94a3b8?text=Founder" alt="Founder" class="w-32 h-32 rounded-full mx-auto mb-6 shadow-lg border-4 border-sky-500">
+                    <p class="text-lg text-slate-300 mb-4">
+                        Hello! I'm the founder and sole developer behind "Solving Problems." My journey into technology was fueled by a deep-seated passion for creating things that make a tangible difference. I believe in the power of well-crafted digital solutions to simplify complexities, enhance experiences, and unlock new possibilities.
+                    </p>
+                    <p class="text-lg text-slate-300 mb-4">
+                        My mission is to partner with individuals and businesses to transform their ideas into reality. Whether it's a sleek web application, an intuitive mobile app, or a bespoke piece of technology, I approach every project with dedication, creativity, and a commitment to excellence. I thrive on challenges and am constantly exploring new technologies to deliver the best possible outcomes.
+                    </p>
+                    <p class="text-lg text-slate-300">
+                        Let's build something amazing together.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-16 sm:py-24 reveal-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Digital Solutions Offered</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="card text-center">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-sky-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Web App Development</h3>
+                        <p class="text-slate-400">Crafting responsive, scalable, and user-friendly web applications tailored to your business needs.</p>
+                    </div>
+                    <div class="card text-center">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-sky-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Mobile App Development</h3>
+                        <p class="text-slate-400">Building intuitive and high-performance mobile apps for iOS and Android platforms.</p>
+                    </div>
+                    <div class="card text-center">
+                        <div class="flex justify-center mb-4">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-sky-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.355a7.5 7.5 0 01-4.5 0m4.5 0v-.75A2.25 2.25 0 0013.5 16.5h-3A2.25 2.25 0 008.25 18.75v.75m4.5 0H12M12 15V2.25A2.25 2.25 0 009.75 0h-3A2.25 2.25 0 004.5 2.25v12.75A2.25 2.25 0 006.75 17.25h.75a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 012.25-2.25h3A2.25 2.25 0 0119.5 6.75v8.5a2.25 2.25 0 01-2.25 2.25h-.75a2.25 2.25 0 01-2.25-2.25z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Tech Consulting</h3>
+                        <p class="text-slate-400">Providing expert guidance to navigate the digital landscape and make informed technology decisions.</p>
+                    </div>
+                    <div class="card text-center">
+                        <div class="flex justify-center mb-4">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-sky-400">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Custom Projects</h3>
+                        <p class="text-slate-400">Developing unique, tailor-made technology solutions to meet your specific and specialized requirements.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-16 sm:py-24 bg-slate-800/50 reveal-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="section-title">Upcoming Projects</h2>
+                <div class="max-w-2xl mx-auto">
+                    <div class="bg-slate-700 p-8 rounded-lg shadow-xl mb-8">
+                        <h3 class="text-3xl font-bold text-sky-400 mb-4">Exciting Things are Brewing!</h3>
+                        <p class="text-lg text-slate-300 mb-6">
+                            I'm constantly working on new ideas and innovative projects. Stay tuned for updates on upcoming digital products designed to connect, entertain, and solve real-world problems.
+                        </p>
+                    </div>
+                    
+                    <div class="card p-8">
+                        <h4 class="text-2xl font-semibold text-white mb-3">Teaser: ActivityConnect</h4>
+                        <p class="text-slate-400 mb-4">
+                            Imagine a platform that helps you find like-minded individuals for your favorite activities – a "Tinder-style" app but for connecting people through shared hobbies, sports, and local events. That's the vision for ActivityConnect!
+                        </p>
+                        <p class="text-slate-400 mb-6">
+                            This app aims to make it easier than ever to find activity partners, join groups, or organize your own events.
+                        </p>
+                        <form class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <input type="email" placeholder="Enter your email for updates" class="form-input sm:w-auto flex-grow" readonly>
+                            <button type="button" class="btn opacity-50 cursor-not-allowed" title="Notification feature coming soon">Notify Me (Soon)</button>
+                        </form>
+                         <p class="text-xs text-slate-500 mt-2">Email notifications are not yet functional. This is a placeholder.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-16 sm:py-24 reveal-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="max-w-xl mx-auto">
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-slate-300 mb-1">Full Name</label>
+                            <input type="text" name="name" id="name" class="form-input" placeholder="Your Name">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
+                            <input type="email" name="email" id="email" class="form-input" placeholder="you@example.com">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-slate-300 mb-1">Message</label>
+                            <textarea name="message" id="message" rows="4" class="form-input" placeholder="Your message..."></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn w-full">Send Message (Demo)</button>
+                        </div>
+                    </form>
+                    <div id="form-message" class="mt-4 text-center"></div>
+                    <div class="mt-10 text-center">
+                        <p class="text-slate-400 mb-2">Or reach out directly:</p>
+                        <a href="mailto:contact@solvingproblems.tech" class="text-sky-400 hover:text-sky-300 text-lg transition-colors duration-300">contact@solvingproblems.tech</a>
+                        <div class="flex justify-center space-x-6 mt-6">
+                            <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-400 transition-colors duration-300" title="GitHub">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
+                            </a>
+                            <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-400 transition-colors duration-300" title="LinkedIn">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-700 py-8 text-center">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-4">
+                <a href="#home" class="px-2 text-slate-400 hover:text-sky-400">Home</a>
+                <a href="#about" class="px-2 text-slate-400 hover:text-sky-400">About</a>
+                <a href="#services" class="px-2 text-slate-400 hover:text-sky-400">Services</a>
+                <a href="#contact" class="px-2 text-slate-400 hover:text-sky-400">Contact</a>
+            </div>
+            <p class="text-slate-500 text-sm">&copy; <span id="currentYear"></span> Solving Problems. All rights reserved.</p>
+            <p class="text-slate-600 text-xs mt-1">Designed with Tailwind CSS & ❤️</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Mobile Menu Toggle ---
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('icon-open');
+            const iconClose = document.getElementById('icon-close');
+
+            menuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                iconOpen.classList.toggle('hidden');
+                iconOpen.classList.toggle('block');
+                iconClose.classList.toggle('hidden');
+                iconClose.classList.toggle('block');
+                const isExpanded = menuButton.getAttribute('aria-expanded') === 'true' || false;
+                menuButton.setAttribute('aria-expanded', !isExpanded);
+            });
+
+            // Close mobile menu when a link is clicked
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    iconOpen.classList.remove('hidden');
+                    iconOpen.classList.add('block');
+                    iconClose.classList.add('hidden');
+                    iconClose.classList.remove('block');
+                    menuButton.setAttribute('aria-expanded', 'false');
+                });
+            });
+            
+            // --- Smooth Scrolling for Nav Links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href.length > 1 && document.querySelector(href)) { // Check if it's a valid selector and not just "#"
+                        e.preventDefault();
+                        // Adjust for fixed header height if necessary
+                        const headerOffset = document.getElementById('header')?.offsetHeight || 70;
+                        const elementPosition = document.querySelector(href).offsetTop;
+                        const offsetPosition = elementPosition - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- Hero Canvas Animation ---
+            const canvas = document.getElementById('heroCanvas');
+            const ctx = canvas.getContext('2d');
+            let particlesArray;
+
+            function setCanvasSize() {
+                canvas.width = window.innerWidth;
+                canvas.height = document.getElementById('home').offsetHeight; // Match hero section height
+            }
+            setCanvasSize(); // Initial size
+
+            // Particle class
+            class Particle {
+                constructor(x, y, directionX, directionY, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.directionX = directionX;
+                    this.directionY = directionY;
+                    this.size = size;
+                    this.color = color;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                update() {
+                    if (this.x > canvas.width || this.x < 0) {
+                        this.directionX = -this.directionX;
+                    }
+                    if (this.y > canvas.height || this.y < 0) {
+                        this.directionY = -this.directionY;
+                    }
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                    this.draw();
+                }
+            }
+
+            // Create particle array
+            function initParticles() {
+                particlesArray = [];
+                let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                if (numberOfParticles > 100) numberOfParticles = 100; // Cap particles
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = (Math.random() * 2) + 1;
+                    let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                    let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                    let directionX = (Math.random() * .4) - .2; // Slower movement
+                    let directionY = (Math.random() * .4) - .2;
+                    let color = 'rgba(14, 165, 233, 0.5)'; // sky-500 with opacity
+
+                    particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+                }
+            }
+
+            // Animation loop
+            function animateParticles() {
+                requestAnimationFrame(animateParticles);
+                ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                }
+                connectParticles();
+            }
+
+            // Connect particles
+            function connectParticles() {
+                let opacityValue = 1;
+                for (let a = 0; a < particlesArray.length; a++) {
+                    for (let b = a; b < particlesArray.length; b++) {
+                        let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                                     + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                        if (distance < (canvas.width/7) * (canvas.height/7)) {
+                            opacityValue = 1 - (distance/20000);
+                            if (opacityValue < 0) opacityValue = 0; // Ensure opacity is not negative
+                            if (opacityValue > 0.3) opacityValue = 0.3; // Cap max opacity for lines
+
+                            ctx.strokeStyle = `rgba(14, 165, 233, ${opacityValue})`; // sky-500
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            // Resize event
+            window.addEventListener('resize', () => {
+                setCanvasSize();
+                initParticles();
+            });
+
+            // Only init and animate if canvas exists
+            if (canvas) {
+                initParticles();
+                animateParticles();
+            }
+
+            // --- Contact Form Submission (Demo) ---
+            const contactForm = document.getElementById('contactForm');
+            const formMessage = document.getElementById('form-message');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    formMessage.textContent = 'Thank you! Your message has been "sent". (This is a demo)';
+                    formMessage.className = 'mt-4 text-center text-green-400';
+                    contactForm.reset();
+                    setTimeout(() => {
+                        formMessage.textContent = '';
+                        formMessage.className = 'mt-4 text-center';
+                    }, 5000);
+                });
+            }
+
+            // --- Current Year for Footer ---
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // --- Scroll Reveal Animations ---
+            const revealElements = document.querySelectorAll('.reveal-hidden');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-visible');
+                        entry.target.classList.remove('reveal-hidden');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+            });
+
+        });
+    </script>
+</body>
+</html>
